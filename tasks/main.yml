@@ -14,3 +14,20 @@
     certbot_installed_certificates: >
       {{ certbot_certificates_command.stdout |
          regex_findall('Certificate Name: (.+)') }}
+
+- name: Install certificates
+  command: >
+    certbot certonly
+    --standalone
+    --email "{{ certbot_email }}"
+    --cert-name "{{ item.key }}"
+    --domains "{{ item.value | join(',') }}"
+    --non-interactive
+    --agree-tos
+    --force-renewal
+  when: >
+    certbot_force_renewal or
+    not item.key in certbot_installed_certificates
+  loop: "{{ certbot_certificates | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"

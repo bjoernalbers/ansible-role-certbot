@@ -11,7 +11,7 @@ Other OSes might work as well.
 
 ### `certbot_email`
 
-Set the e-mail address for optaining a certificate (certbot: `--email`).
+Set the e-mail address for obtaining a certificate (certbot: `--email`).
 
 Example:
 
@@ -22,22 +22,17 @@ certbot_email: webmaster@example.com
 ### `certbot_certificates`
 
 This dictionary defines which certificates to create.
-The key sets the certificate name (certbot: `--cert-name`).
-It doesn't have to be a domain and can be any string.
-But keep it simple because the certificate name will be included in several
-paths.
-
-The value is another dictionary with at least a key named "domains", that
-contains a list of domains to include in the certificate.
+The key is the certificate name (certbot: `--cert-name`), which can be a
+domain.
+And the value is a list of domains to be included in the certificate.
 
 Example:
 
 ```yaml
 certbot_certificates:
   example.com:
-    domains:
-      - example.com
-      - www.example.com
+    - example.com
+    - www.example.com
 ```
 
 ## Dependencies
@@ -54,9 +49,8 @@ None.
       certbot_email: webmaster@example.com
       certbot_certificates:
         example.com:
-          domains:
-            - example.com
-            - www.example.com
+          - example.com
+          - www.example.com
 ```
 
 ## License
