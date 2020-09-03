@@ -71,7 +71,7 @@ None.
 ---
 - hosts: all
   roles:
-    - role: certbot
+    - role: bjoernalbers.certbot
       certbot_email: webmaster@example.com
       certbot_certificates:
         example.com:
