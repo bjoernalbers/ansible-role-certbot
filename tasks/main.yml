@@ -22,6 +22,7 @@
     --email "{{ certbot_email }}"
     --cert-name "{{ item.key }}"
     --domains "{{ item.value | join(',') }}"
+    --deploy-hook "{{ certbot_deploy_hook }}"
     --non-interactive
     --agree-tos
     --force-renewal

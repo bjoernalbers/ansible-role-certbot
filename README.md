@@ -35,6 +35,17 @@ certbot_certificates:
     - www.example.com
 ```
 
+### `certbot_deploy_hook`
+
+The command to run after a successful certificate installation or renewal
+(certbot: `--deploy-hook`).
+
+Example:
+
+```yaml
+certbot_deploy_hook: systemctl restart nginx.service
+```
+
 ## Dependencies
 
 None.
@@ -51,6 +62,7 @@ None.
         example.com:
           - example.com
           - www.example.com
+      certbot_deploy_hook: systemctl restart nginx.service
 ```
 
 ## License
