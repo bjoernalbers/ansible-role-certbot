@@ -1,2 +1,5 @@
 ---
-# tasks file for certbot
+- name: Install packages
+  package:
+    name: "{{ certbot_package }}"
+    state: latest
