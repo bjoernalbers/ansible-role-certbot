@@ -46,6 +46,21 @@ Example:
 certbot_deploy_hook: systemctl restart nginx.service
 ```
 
+### `certbot_force_renewal`
+
+Force renewal of certificates, even if not due yet (certbot:
+`--force-renewal`).
+
+If you want to add / remove a certificate's domain or update the deploy hook
+you have to forcefully run `certbot` once.
+This ensures that the certicate and configuration gets updated.
+
+Example:
+
+```yes
+certbot_force_renewal: yes
+```
+
 ## Dependencies
 
 None.
