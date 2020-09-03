@@ -11,7 +11,8 @@ galaxy_info:
   galaxy_tags:
     - certbot
     - letsencrypt
+    - certificates
+    - encryption
     - acme
     - ssl
-    - tls
 dependencies: []
