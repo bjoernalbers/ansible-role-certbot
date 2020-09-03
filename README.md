@@ -1,38 +1,64 @@
-Role Name
-=========
+# Ansible Role: Certbot
 
-A brief description of the role goes here.
+Manage SSL certificates via Certbot / Let's Encrypt.
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role has been tested under Debian Buster.
+Other OSes might work as well.
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+### `certbot_email`
 
-Dependencies
-------------
+Set the e-mail address for optaining a certificate (certbot: `--email`).
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Example:
 
-Example Playbook
-----------------
+```yaml
+certbot_email: webmaster@example.com
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+### `certbot_certificates`
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+This dictionary defines which certificates to create.
+The key sets the certificate name (certbot: `--cert-name`).
+It doesn't have to be a domain and can be any string.
+But keep it simple because the certificate name will be included in several
+paths.
 
-License
--------
+The value is another dictionary with at least a key named "domains", that
+contains a list of domains to include in the certificate.
 
-BSD
+Example:
 
-Author Information
-------------------
+```yaml
+certbot_certificates:
+  example.com:
+    domains:
+      - example.com
+      - www.example.com
+```
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+## Dependencies
+
+None.
+
+## Example Playbook
+
+```yaml
+---
+- hosts: all
+  roles:
+    - role: certbot
+      certbot_email: webmaster@example.com
+      certbot_certificates:
+        example.com:
+          domains:
+            - example.com
+            - www.example.com
+```
+
+## License
+
+This Ansible role is released under the [MIT License](LICENSE.txt).
