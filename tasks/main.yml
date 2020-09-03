@@ -3,3 +3,14 @@
   package:
     name: "{{ certbot_package }}"
     state: latest
+
+- name: Get installed certificates
+  command: certbot certificates
+  changed_when: no
+  register: certbot_certificates_command
+
+- name: Set installed certificates
+  set_fact:
+    certbot_installed_certificates: >
+      {{ certbot_certificates_command.stdout |
+         regex_findall('Certificate Name: (.+)') }}
