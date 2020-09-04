@@ -18,15 +18,14 @@
 - name: Add deploy hook option when defined
   set_fact:
     certbot_command: >
-      {{ certbot_command + [ '--deploy-hook', certbot_deploy_hook | quote ] }}
+      {{ certbot_command + [ '--deploy-hook', certbot_deploy_hook ] }}
   when: certbot_deploy_hook is defined
 
 - name: Install certificates
-  command: >
-    {{ certbot_command | join(' ') }}
-    --email "{{ certbot_email }}"
-    --cert-name "{{ item.key }}"
-    --domains "{{ item.value | join(',') }}"
+  command:
+    argv: >
+      {{ certbot_command + [ '--email', certbot_email, '--cert-name', item.key,
+      '--domains', item.value | join(',') ] }}
   when: >
     certbot_force_renewal or
     not item.key in certbot_installed_certificates
