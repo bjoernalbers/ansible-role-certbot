@@ -1,4 +1,4 @@
 ---
 certbot_certificates: {}
 certbot_force_renewal: no
-certbot_deploy_hook: 'true'
+#certbot_deploy_hook:

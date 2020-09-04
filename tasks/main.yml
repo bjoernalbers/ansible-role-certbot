@@ -15,17 +15,18 @@
       {{ certbot_certificates_command.stdout |
          regex_findall('Certificate Name: (.+)') }}
 
+- name: Add deploy hook option when defined
+  set_fact:
+    certbot_command: >
+      {{ certbot_command + [ '--deploy-hook', certbot_deploy_hook | quote ] }}
+  when: certbot_deploy_hook is defined
+
 - name: Install certificates
   command: >
-    certbot certonly
-    --standalone
+    {{ certbot_command | join(' ') }}
     --email "{{ certbot_email }}"
     --cert-name "{{ item.key }}"
     --domains "{{ item.value | join(',') }}"
-    --deploy-hook "{{ certbot_deploy_hook }}"
-    --non-interactive
-    --agree-tos
-    --force-renewal
   when: >
     certbot_force_renewal or
     not item.key in certbot_installed_certificates
