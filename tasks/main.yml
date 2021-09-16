@@ -4,22 +4,25 @@
     name: "{{ certbot_package }}"
     state: present
 
-- name: Get installed certificates
-  command: certbot certificates
-  changed_when: no
-  register: certbot_certificates_command
-
-- name: Set installed certificates
-  set_fact:
-    certbot_installed_certificates: >
-      {{ certbot_certificates_command.stdout |
-         regex_findall('Certificate Name: (.+)') }}
-
-- name: Get all renewal configurations
+- name: Find all renewal configurations
   find:
     path: "{{ certbot_renewal_config_dir }}"
     file_type: file
   register: certbot_renewal_configs
+
+- name: Determine installed certificates
+  set_fact:
+    certbot_installed_certificates: >
+      {{ certbot_renewal_configs.files |
+         map(attribute='path') |
+         map('basename') |
+         map('regex_replace', '(.*)\.conf$', '\1') }}
+
+- name: Determine obsolete certificates
+  set_fact:
+    certbot_obsolete_certificates: >
+      {{ certbot_installed_certificates |
+         difference(certbot_certificates.keys()) }}
 
 - name: Add deploy hook option when defined
   set_fact:
@@ -38,15 +41,6 @@
   loop: "{{ certbot_certificates | dict2items }}"
   loop_control:
     label: "{{ item.key }}"
-
-- name: Determine obsolete certificates
-  set_fact:
-    certbot_obsolete_certificates: >
-      {{ certbot_renewal_configs.files |
-         map(attribute='path') |
-         map('basename') |
-         map('regex_replace', '(.*)\.conf$', '\1') |
-         difference(certbot_certificates.keys()) }}
 
 - name: Delete obsolete certificates
   file:
