@@ -15,6 +15,12 @@
       {{ certbot_certificates_command.stdout |
          regex_findall('Certificate Name: (.+)') }}
 
+- name: Get all renewal configurations
+  find:
+    path: "{{ certbot_renewal_config_dir }}"
+    file_type: file
+  register: certbot_renewal_configs
+
 - name: Add deploy hook option when defined
   set_fact:
     certbot_command: >
@@ -32,3 +38,24 @@
   loop: "{{ certbot_certificates | dict2items }}"
   loop_control:
     label: "{{ item.key }}"
+
+- name: Determine obsolete certificates
+  set_fact:
+    certbot_obsolete_certificates: >
+      {{ certbot_renewal_configs.files |
+         map(attribute='path') |
+         map('basename') |
+         map('regex_replace', '(.*)\.conf$', '\1') |
+         difference(certbot_certificates.keys()) }}
+
+- name: Delete obsolete certificates
+  file:
+    path: "{{ certbot_certificates_dir }}/{{ item }}"
+    state: absent
+  loop: "{{ certbot_obsolete_certificates }}"
+
+- name: Delete obsolete renewal configurations
+  file:
+    path: "{{ certbot_renewal_config_dir }}/{{ item }}.conf"
+    state: absent
+  loop: "{{ certbot_obsolete_certificates }}"

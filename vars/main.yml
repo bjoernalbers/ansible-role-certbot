@@ -1,5 +1,8 @@
 ---
 certbot_package: certbot
+certbot_config_dir: /etc/letsencrypt
+certbot_renewal_config_dir: "{{ certbot_config_dir }}/renewal"
+certbot_certificates_dir: "{{ certbot_config_dir }}/live"
 certbot_command:
   - certbot
   - certonly
